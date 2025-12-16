@@ -2,7 +2,6 @@
   const form = document.getElementById('layoutForm');
   const statusEl = document.getElementById('formStatus');
   const metricPieces = document.getElementById('metricPieces');
-  const metricGrid = document.getElementById('metricGrid');
   const metricUsage = document.getElementById('metricUsage');
   const metricWaste = document.getElementById('metricWaste');
   const previewContainer = document.getElementById('previewContainer');
@@ -32,6 +31,35 @@
     in: { min: 0.05, max: 40 }
   };
 
+  function span(count, size, gap) {
+    if (!Number.isFinite(count) || count <= 0) return 0;
+    return count * size + Math.max(0, count - 1) * gap;
+  }
+
+  function gridStats(areaWidth, areaHeight, cellWidth, cellHeight, gapX, gapY) {
+    const width = Math.max(0, areaWidth);
+    const height = Math.max(0, areaHeight);
+    if (width <= 0 || height <= 0 || cellWidth <= 0 || cellHeight <= 0) {
+      return { rows: 0, columns: 0, total: 0, usedWidth: 0, usedHeight: 0 };
+    }
+    const columns = Math.max(0, Math.floor((width + gapX) / (cellWidth + gapX)));
+    const rows = Math.max(0, Math.floor((height + gapY) / (cellHeight + gapY)));
+    return {
+      rows,
+      columns,
+      total: rows * columns,
+      usedWidth: span(columns, cellWidth, gapX),
+      usedHeight: span(rows, cellHeight, gapY)
+    };
+  }
+
+  function pickBetterLayout(current, candidate) {
+    if (!candidate || candidate.total <= 0) return current;
+    if (!current || candidate.total > current.total) return candidate;
+    if (candidate.total === current.total && candidate.usage > current.usage) return candidate;
+    return current;
+  }
+
   const state = {
     unit: 'mm',
     sheet: { width: 210, height: 297 },
@@ -46,6 +74,7 @@
     preset: 'a4',
     lockRatio: false,
     allowRotation: true,
+    linkGaps: true,
     aspectRatio: null
   };
 
@@ -167,7 +196,8 @@
     margin: document.getElementById('margin'),
     gapX: document.getElementById('gapX'),
     gapY: document.getElementById('gapY'),
-    allowRotation: document.getElementById('allowRotation')
+    allowRotation: document.getElementById('allowRotation'),
+    linkGaps: document.getElementById('linkGaps')
   };
 
   Object.entries(inputs).forEach(([key, input]) => {
@@ -187,6 +217,17 @@
     }
     if (key === 'allowRotation') {
       state.allowRotation = input.checked;
+      calculateAndRender();
+      return;
+    }
+    if (key === 'linkGaps') {
+      state.linkGaps = input.checked;
+      if (state.linkGaps) {
+        const reference = Number.isFinite(state.gapX) ? state.gapX : state.gapY;
+        if (Number.isFinite(reference)) {
+          unifyGapValues(reference);
+        }
+      }
       calculateAndRender();
       return;
     }
@@ -225,6 +266,9 @@
       }
     }
     setStateValue(key, normalized);
+    if (state.linkGaps && Number.isFinite(normalized) && (key === 'gapX' || key === 'gapY')) {
+      mirrorGapValue(key, normalized);
+    }
     calculateAndRender();
   }
 
@@ -269,6 +313,23 @@
       default:
         break;
     }
+  }
+
+  function mirrorGapValue(sourceKey, value) {
+    if (!Number.isFinite(value)) return;
+    const targetKey = sourceKey === 'gapX' ? 'gapY' : 'gapX';
+    setStateValue(targetKey, value);
+    if (inputs[targetKey]) {
+      inputs[targetKey].value = value;
+    }
+  }
+
+  function unifyGapValues(value) {
+    if (!Number.isFinite(value)) return;
+    setStateValue('gapX', value);
+    setStateValue('gapY', value);
+    if (inputs.gapX) inputs.gapX.value = value;
+    if (inputs.gapY) inputs.gapY.value = value;
   }
 
   function validateField(key, input) {
@@ -316,44 +377,163 @@
     let optimized = strict;
     if (state.allowRotation) {
       const rotated = layoutCalculation(sheetW, sheetH, imageH, imageW, margin, gapX, gapY, true);
-      optimized = rotated.total > strict.total ? rotated : strict;
+      optimized = pickBetterLayout(optimized, rotated);
+
+      const hybridNormal = layoutHybrid(
+        sheetW,
+        sheetH,
+        { width: imageW, height: imageH },
+        { width: imageH, height: imageW },
+        margin,
+        gapX,
+        gapY,
+        { primary: 'Original', secondary: 'Rotado', primaryRotated: false }
+      );
+      optimized = pickBetterLayout(optimized, hybridNormal);
+
+      const hybridRotatedFirst = layoutHybrid(
+        sheetW,
+        sheetH,
+        { width: imageH, height: imageW },
+        { width: imageW, height: imageH },
+        margin,
+        gapX,
+        gapY,
+        { primary: 'Rotado', secondary: 'Original', primaryRotated: true }
+      );
+      optimized = pickBetterLayout(optimized, hybridRotatedFirst);
     }
     return { strict, optimized };
   }
 
   function layoutCalculation(sheetW, sheetH, imgW, imgH, margin, gapX, gapY, rotated = false) {
-    const usableW = sheetW - margin * 2 + gapX;
-    const usableH = sheetH - margin * 2 + gapY;
-    const cellW = imgW + gapX;
-    const cellH = imgH + gapY;
+    const printableW = sheetW - margin * 2;
+    const printableH = sheetH - margin * 2;
+    const stats = gridStats(printableW, printableH, imgW, imgH, gapX, gapY);
+    const sheetArea = sheetW * sheetH;
+    const label = rotated ? 'Rotado' : 'Original';
+    const summaryText = rotated ? `${stats.rows} × ${stats.columns} (${label})` : `${stats.rows} × ${stats.columns}`;
     const base = {
       sheet: { width: sheetW, height: sheetH, margin },
       cell: { width: imgW, height: imgH },
       gap: { x: gapX, y: gapY },
       rotated
     };
-    if (usableW <= 0 || usableH <= 0 || cellW <= 0 || cellH <= 0) {
+    if (!stats.total) {
       return {
         total: 0,
         rows: 0,
         columns: 0,
         usage: 0,
+        summary: '--',
+        segments: [],
         ...base
       };
     }
-    const columns = Math.max(0, Math.floor(usableW / cellW));
-    const rows = Math.max(0, Math.floor(usableH / cellH));
-    const total = rows * columns;
-    const sheetArea = sheetW * sheetH;
-    const usedArea = total * (imgW * imgH);
+    const usedArea = stats.total * (imgW * imgH);
     const usage = sheetArea ? (usedArea / sheetArea) * 100 : 0;
+    const segment = {
+      rows: stats.rows,
+      columns: stats.columns,
+      cell: { width: imgW, height: imgH },
+      offset: { x: 0, y: 0 },
+      gap: { x: gapX, y: gapY },
+      total: stats.total,
+      label
+    };
     return {
-      total,
-      rows,
-      columns,
+      total: stats.total,
+      rows: stats.rows,
+      columns: stats.columns,
       usage,
+      summary: summaryText,
+      segments: [segment],
       ...base
     };
+  }
+
+  function layoutHybrid(sheetW, sheetH, primaryDims, secondaryDims, margin, gapX, gapY, labels = {}) {
+    const printableW = sheetW - margin * 2;
+    const printableH = sheetH - margin * 2;
+    if (printableW <= 0 || printableH <= 0) return null;
+    const baseStats = gridStats(printableW, printableH, primaryDims.width, primaryDims.height, gapX, gapY);
+    if (!baseStats.total) return null;
+    const sheetArea = sheetW * sheetH;
+    const primaryLabel = labels.primary || 'Original';
+    const secondaryLabel = labels.secondary || 'Rotado';
+
+    const baseSegmentTemplate = {
+      rows: baseStats.rows,
+      columns: baseStats.columns,
+      cell: { width: primaryDims.width, height: primaryDims.height },
+      offset: { x: 0, y: 0 },
+      gap: { x: gapX, y: gapY },
+      total: baseStats.total,
+      label: primaryLabel
+    };
+
+    const layouts = [];
+
+    function buildLayout(extraStats, offsetX, offsetY) {
+      if (!extraStats || !extraStats.total) return null;
+      const segments = [
+        {
+          rows: baseSegmentTemplate.rows,
+          columns: baseSegmentTemplate.columns,
+          cell: { ...baseSegmentTemplate.cell },
+          offset: { ...baseSegmentTemplate.offset },
+          gap: { ...baseSegmentTemplate.gap },
+          total: baseSegmentTemplate.total,
+          label: primaryLabel
+        },
+        {
+          rows: extraStats.rows,
+          columns: extraStats.columns,
+          cell: { width: secondaryDims.width, height: secondaryDims.height },
+          offset: { x: offsetX, y: offsetY },
+          gap: { x: gapX, y: gapY },
+          total: extraStats.total,
+          label: secondaryLabel
+        }
+      ];
+      const total = baseStats.total + extraStats.total;
+      const usedArea = baseStats.total * primaryDims.width * primaryDims.height + extraStats.total * secondaryDims.width * secondaryDims.height;
+      const summary = `${baseStats.rows} × ${baseStats.columns} (${primaryLabel}) + ${extraStats.rows} × ${extraStats.columns} (${secondaryLabel})`;
+      return {
+        total,
+        rows: baseStats.rows,
+        columns: baseStats.columns,
+        usage: sheetArea ? (usedArea / sheetArea) * 100 : 0,
+        summary,
+        sheet: { width: sheetW, height: sheetH, margin },
+        cell: { width: primaryDims.width, height: primaryDims.height },
+        gap: { x: gapX, y: gapY },
+        rotated: labels.primaryRotated || false,
+        mode: 'hybrid',
+        segments
+      };
+    }
+
+    const baseUsedHeight = baseStats.usedHeight;
+    const offsetY = baseUsedHeight > 0 ? baseUsedHeight + (baseStats.rows > 0 ? gapY : 0) : 0;
+    const availableHeight = printableH - offsetY;
+    if (availableHeight > 0) {
+      const extraHeightStats = gridStats(printableW, availableHeight, secondaryDims.width, secondaryDims.height, gapX, gapY);
+      const layout = buildLayout(extraHeightStats, 0, offsetY);
+      if (layout) layouts.push(layout);
+    }
+
+    const baseUsedWidth = baseStats.usedWidth;
+    const offsetX = baseUsedWidth > 0 ? baseUsedWidth + (baseStats.columns > 0 ? gapX : 0) : 0;
+    const availableWidth = printableW - offsetX;
+    if (availableWidth > 0) {
+      const extraWidthStats = gridStats(availableWidth, printableH, secondaryDims.width, secondaryDims.height, gapX, gapY);
+      const layout = buildLayout(extraWidthStats, offsetX, 0);
+      if (layout) layouts.push(layout);
+    }
+
+    if (!layouts.length) return null;
+    return layouts.reduce((best, candidate) => pickBetterLayout(best, candidate), null);
   }
 
   function noLayout(rotated) {
@@ -368,16 +548,22 @@
     const secondary = showOptimized ? strict : null;
 
     metricPieces.innerHTML = renderMetricBlock(primary, secondary, (data) => data.total);
-    metricGrid.innerHTML = renderMetricBlock(primary, secondary, (data) => `${data.rows} × ${data.columns}`);
     metricUsage.innerHTML = renderMetricBlock(primary, secondary, (data) => `${data.usage.toFixed(1)}%`);
     metricWaste.innerHTML = renderMetricBlock(primary, secondary, (data) => `${(100 - data.usage).toFixed(1)}%`);
   }
 
   function toMetricSnapshot(label, data) {
     if (!data || !Number.isFinite(data.total) || data.total <= 0) {
-      return { label, total: 0, rows: 0, columns: 0, usage: 0 };
+      return { label, total: 0, rows: 0, columns: 0, usage: 0, summary: '--' };
     }
-    return { label, total: data.total, rows: data.rows, columns: data.columns, usage: Math.max(0, Math.min(100, data.usage)) };
+    return {
+      label,
+      total: data.total,
+      rows: data.rows,
+      columns: data.columns,
+      usage: Math.max(0, Math.min(100, data.usage)),
+      summary: data.summary || `${data.rows} × ${data.columns}`
+    };
   }
 
   function renderMetricBlock(primary, secondary, formatter) {
@@ -435,7 +621,7 @@
     rect.setAttribute('y', viewport.offsetY);
     rect.setAttribute('width', viewport.width);
     rect.setAttribute('height', viewport.height);
-    rect.setAttribute('rx', '6');
+    rect.setAttribute('rx', '0');
     rect.setAttribute('fill', 'none');
     rect.setAttribute('stroke', isStrict ? 'var(--color-strict)' : 'var(--color-optimized)');
     rect.setAttribute('stroke-width', '1.5');
@@ -449,37 +635,63 @@
       printable.setAttribute('y', viewport.offsetY + data.sheet.margin * viewport.scale);
       printable.setAttribute('width', printableWidth);
       printable.setAttribute('height', printableHeight);
-      printable.setAttribute('rx', '4');
+      printable.setAttribute('rx', '0');
       printable.setAttribute('fill', 'rgba(255,255,255,0.3)');
       stage.appendChild(printable);
     }
 
     const marginOffsetX = viewport.offsetX + data.sheet.margin * viewport.scale;
     const marginOffsetY = viewport.offsetY + data.sheet.margin * viewport.scale;
-    const tileWidth = Math.max(0, data.cell.width * viewport.scale);
-    const tileHeight = Math.max(0, data.cell.height * viewport.scale);
-    const stepX = (data.cell.width + data.gap.x) * viewport.scale;
-    const stepY = (data.cell.height + data.gap.y) * viewport.scale;
+    const segments = Array.isArray(data.segments) && data.segments.length
+      ? data.segments
+      : [
+          {
+            rows: data.rows,
+            columns: data.columns,
+            cell: data.cell ? { ...data.cell } : { width: 0, height: 0 },
+            offset: { x: 0, y: 0 },
+            gap: data.gap ? { ...data.gap } : { x: 0, y: 0 },
+            total: data.total,
+            label: data.rotated ? 'Rotado' : 'Original'
+          }
+        ];
 
-    let placed = 0;
-    outer: for (let row = 0; row < data.rows; row += 1) {
-      for (let col = 0; col < data.columns; col += 1) {
-        if (placed >= data.total) break outer;
-        const cell = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        const x = marginOffsetX + col * stepX;
-        const y = marginOffsetY + row * stepY;
-        cell.setAttribute('x', x);
-        cell.setAttribute('y', y);
-        cell.setAttribute('width', Math.max(0, tileWidth));
-        cell.setAttribute('height', Math.max(0, tileHeight));
-        cell.setAttribute('fill', isStrict ? 'var(--color-strict-pattern)' : 'var(--color-optimized-pattern)');
-        cell.setAttribute('stroke', isStrict ? 'var(--color-strict)' : 'var(--color-optimized)');
-        cell.setAttribute('stroke-width', '0.4');
-        stage.appendChild(cell);
-        placed += 1;
+    segments.forEach((segment) => {
+      const tileWidth = Math.max(0, (segment.cell?.width || 0) * viewport.scale);
+      const tileHeight = Math.max(0, (segment.cell?.height || 0) * viewport.scale);
+      const gapX = segment.gap?.x ?? data.gap.x ?? 0;
+      const gapY = segment.gap?.y ?? data.gap.y ?? 0;
+      const stepX = ((segment.cell?.width || 0) + gapX) * viewport.scale;
+      const stepY = ((segment.cell?.height || 0) + gapY) * viewport.scale;
+      const baseX = marginOffsetX + (segment.offset?.x || 0) * viewport.scale;
+      const baseY = marginOffsetY + (segment.offset?.y || 0) * viewport.scale;
+      const rowLimit = Math.max(0, segment.rows || 0);
+      const colLimit = Math.max(0, segment.columns || 0);
+      for (let row = 0; row < rowLimit; row += 1) {
+        for (let col = 0; col < colLimit; col += 1) {
+          const cell = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          const x = baseX + col * stepX;
+          const y = baseY + row * stepY;
+          cell.setAttribute('x', x);
+          cell.setAttribute('y', y);
+          cell.setAttribute('width', Math.max(0, tileWidth));
+          cell.setAttribute('height', Math.max(0, tileHeight));
+          cell.setAttribute('fill', isStrict ? 'var(--color-strict-pattern)' : 'var(--color-optimized-pattern)');
+          cell.setAttribute('stroke', isStrict ? 'var(--color-strict)' : 'var(--color-optimized)');
+          const isRotatedSegment = (segment.label || '').toLowerCase().includes('rotado');
+          cell.setAttribute('fill-opacity', isRotatedSegment ? '0.7' : '1');
+          cell.removeAttribute('stroke-dasharray');
+          cell.setAttribute('stroke-width', '0.4');
+          stage.appendChild(cell);
+        }
       }
-    }
+    });
+
+    const summary = document.createElement('p');
+    summary.className = 'preview-card__summary';
+    summary.textContent = `${data.total} piezas - ${data.summary || ''}`;
     card.appendChild(stage);
+    card.appendChild(summary);
     return card;
   }
 
@@ -525,6 +737,7 @@
     inputs.gapY.value = state.gapY;
     inputs.lockRatio.checked = state.lockRatio;
     inputs.allowRotation.checked = state.allowRotation;
+    inputs.linkGaps.checked = state.linkGaps;
     syncUnitButtons();
     updateSheetInputsLock();
     updateDimensionSteps();

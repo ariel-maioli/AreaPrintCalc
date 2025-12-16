@@ -26,8 +26,8 @@
   <body>
     <header class="app-header">
       <div class="branding">
-        <h1>Calculadora de área imprimible</h1>
-        <p>Sublimación y estampado sin instalación</p>
+        <h1>PeeP Rosario</h1>
+        <p>Calculadora de área imprimible</p>
       </div>
       <button type="button" class="theme-switch" aria-label="Cambiar tema" role="switch" aria-checked="false" id="themeToggle">
         <span class="theme-switch__icon" aria-hidden="true">◑</span>
@@ -79,7 +79,7 @@
 
           <div class="field-pair margin-row">
             <div class="field-group">
-              <label for="margin">Margen (mm)</label>
+              <label for="margin">Margen uniforme (mm)</label>
               <input id="margin" name="margin" type="number" step="1" min="0" value="5" />
             </div>
             <div class="field-group field-group--spacer" aria-hidden="true"></div>
@@ -123,9 +123,13 @@
             </div>
           </div>
 
+          <div class="field-group checkbox-group">
+            <input type="checkbox" id="linkGaps" name="linkGaps" checked />
+            <label for="linkGaps">Mantener espacios iguales</label>
+          </div>
+
           <div class="form-footer">
             <div class="status" id="formStatus" aria-live="polite"></div>
-            <button type="submit" class="primary">Actualizar diseño</button>
           </div>
         </form>
       </section>
@@ -138,10 +142,6 @@
           <div>
             <dt>Copias:</dt>
             <dd id="metricPieces">--</dd>
-          </div>
-          <div>
-            <dt>Disposición:</dt>
-            <dd id="metricGrid">--</dd>
           </div>
           <div>
             <dt>Uso área:</dt>

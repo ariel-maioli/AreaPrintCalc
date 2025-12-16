@@ -59,11 +59,11 @@
     </style>
   </head>
   <body>
-    <h1>Guía de ayuda rápida</h1>
+    <h1>PeeP Rosario · Guía de ayuda rápida</h1>
     <p>
       Esta calculadora estima cuántas copias de una imagen caben en una hoja para sublimación o
-      estampado. Ingresa las medidas de tu hoja e imagen, ajusta los márgenes y la separación, y compara
-      dos estrategias: <strong>Estricto</strong> (sin rotaciones) y <strong>Optimizado</strong> (permite girar 90° para ganar piezas).
+      estampado. Ingresa las medidas de la hoja, define márgenes y separaciones, y compara dos estrategias:
+      <strong>Estricto</strong> (sin rotaciones) y <strong>Optimizado</strong> (combina piezas rotadas e incluso franjas mixtas).
     </p>
 
     <section>
@@ -82,7 +82,7 @@
         <dd>
           Medidas de la hoja en la unidad seleccionada. Se bloquean si usas un preset y se activan en modo “Personalizada”. Los rangos válidos son 1–40 in, 1–100 cm o 1–1000 mm.
         </dd>
-        <dt>Margen (mm)</dt>
+        <dt>Margen uniforme (mm)</dt>
         <dd>
           Borde de seguridad aplicado por todos los lados de la hoja. Siempre se introduce en milímetros y admite solo enteros. El valor predeterminado es 5 mm.
         </dd>
@@ -100,11 +100,11 @@
         </dd>
         <dt>Espacio horizontal / vertical</dt>
         <dd>
-          Distancia mínima entre copias. Se ingresa en milímetros y puede ser cero para diseños sin separación.
+          Distancia mínima entre copias. Se ingresa en milímetros y puede ser cero.
         </dd>
-        <dt>Actualizar diseño</dt>
+        <dt>Mantener espacios iguales</dt>
         <dd>
-          Calcula nuevamente ambas estrategias. El botón se desactiva si falta información obligatoria o hay errores de validación.
+          Replica automáticamente el gap horizontal en el vertical (y viceversa). Está activado por defecto para ahorrar pasos.
         </dd>
       </dl>
       <div class="tip">
@@ -118,10 +118,6 @@
         <dt>Copias</dt>
         <dd>
           Número total de piezas que entran según la mejor estrategia. Cuando el modo Optimizado supera al Estricto, se muestra una nota debajo con el resultado estricto para que compares.
-        </dd>
-        <dt>Disposición</dt>
-        <dd>
-          Desglose en filas × columnas de la estrategia ganadora. La nota secundaria indica la cuadrícula del modo alternativo cuando existe una mejora.
         </dd>
         <dt>Uso área</dt>
         <dd>
@@ -137,7 +133,7 @@
     <section>
       <h2>Panel “Previsualización”</h2>
       <p>
-        Muestra un boceto proporcional de la hoja. Las líneas diagonales azules indican el modo Estricto; el patrón de puntos naranja identifica el modo Optimizado cuando aporta más copias. Cada tarjeta incluye una insignia con el beneficio en piezas (+N) y en porcentaje cuando existe una mejora.
+        Muestra un boceto proporcional de la hoja. Las copias estrictas usan relleno sólido; los segmentos rotados emplean la misma paleta con distinta opacidad para distinguirlos sin líneas punteadas. Cada tarjeta incluye una insignia con el beneficio en piezas (+N) y en porcentaje cuando existe mejora.
       </p>
       <ul>
         <li><strong>Zona clara:</strong> es el área aprovechable después de descontar el margen.</li>
@@ -170,13 +166,13 @@
         <li>Define la unidad que prefieras trabajar; la app mantiene las conversiones por ti.</li>
         <li>Ajusta el margen y los espacios para reflejar tu tolerancia de corte.</li>
         <li>Introduce las medidas de la imagen y, si es necesario, activa “Mantener proporción”.</li>
-        <li>Decide si vale la pena considerar rotaciones y deja marcado “Permitir rotación” salvo que tu diseño no admita giros.</li>
-        <li>Presiona “Actualizar diseño” y revisa el panel de métricas junto con la previsualización.</li>
+        <li>Usa “Mantener espacios iguales” cuando los separadores deban coincidir y deja “Permitir rotación” activo salvo que tu diseño no admita giros.</li>
+        <li>Observa cómo la calculadora actualiza automáticamente las métricas y las previsualizaciones mientras editas.</li>
       </ol>
     </section>
 
     <p>
-      ¿Dudas adicionales? Revisa el archivo <code>README.md</code> dentro del proyecto para detalles técnicos o abre un issue en tu repositorio personal si necesitas una mejora específica.
+      ¿Dudas adicionales? Revisa el archivo <code>README.md</code> para detalles técnicos o abre un issue en tu repositorio personal si necesitas una mejora específica.
     </p>
   </body>
 </html>

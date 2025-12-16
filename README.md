@@ -1,3 +1,68 @@
+# PeeP Rosario · Calculadora de área imprimible
+
+Aplicación SPA (HTML/CSS/JS) para talleres de sublimación o estampado que desean saber cuántas copias caben en cada hoja sin instalar software. Toda la interfaz está en español, corre offline en el navegador y prioriza accesibilidad, contraste y soporte táctil.
+
+## Objetivos
+- Evaluar dos estrategias:
+  - **Modo estricto**: cuadrícula alineada a los ejes, sin rotación.
+  - **Modo optimizado**: compara la versión rotada y agrega franjas híbridas que combinan ambas orientaciones para aprovechar los residuos.
+- Mostrar como máximo dos previsualizaciones y añadir un badge `+N piezas (+X%)` solo cuando el modo optimizado supera al estricto.
+- Ofrecer un panel de métricas compacto con copias totales, uso del área y desperdicio (cada métrica incluye la referencia estricta cuando hay mejora).
+- Recalcular automáticamente al modificar cualquier campo, sin botones extras ni flujos de envío.
+- Mantener temas claro/oscuro accesibles y patrones reconocibles para distinguir los modos.
+
+## Arquitectura
+```
+index.html             # Maquetado semántico, formulario, métricas y paneles
+assets/css/styles.css  # Tokens de tema, layout, responsivo, estados de foco
+assets/js/app.js       # Estado, cálculos, render SVG, controlador de tema
+```
+
+### Módulos principales (assets/js/app.js)
+- `StateStore`: mantiene todos los valores canonizados en milímetros, banderas como “mantener proporción / espacios iguales”, preferencias de tema y resultados vigentes.
+- `CalculatorCore`: normaliza entradas, calcula el layout estricto, el rotado y combinaciones híbridas (añadiendo franjas laterales o inferiores) y elige la mejor con `pickBetterLayout`.
+- `PreviewRenderer`: dibuja tarjetas SVG con márgenes, área imprimible y segmentos independientes (cada segmento conoce su offset, gap y etiqueta “Original/Rotado”).
+- `ThemeController`: sincroniza el switch accesible (`role="switch"`), aplica `data-theme` antes del primer repintado y persiste en `localStorage`.
+
+## Formulario
+Los controles viven en la columna izquierda. Valores iniciales: hoja A4, unidad mm, margen 5 mm, gaps 3 mm, rotación y vínculo de gaps activados.
+
+| Campo                     | Tipo / Opciones                                      | Predeterminado | Obligatorio | Notas |
+|---------------------------|------------------------------------------------------|----------------|-------------|-------|
+| Formato de hoja           | select (Carta, Oficio, Tabloide, A4, A3, A3+, Personalizada) | A4 | Sí | Cada preset rellena ancho/alto; solo “Personalizada” permite editarlos. |
+| Ancho / Alto de hoja      | Números sincronizados con la unidad                  | Según preset   | Sí | Rangos: 1‑40 in, 1‑100 cm o 1‑1000 mm. Bloqueados salvo preset personalizado. |
+| Unidad                    | Control segmentado (in / cm / mm)                    | mm             | Sí | Cambiar unidad convierte todos los campos con redondeo apropiado. |
+| Ancho / Alto de imagen    | Número                                               | Vacío          | Sí | Deben ser > 0 y caber en el área imprimible. |
+| Mantener proporción       | Checkbox                                             | Desactivado    | No | Bloquea la relación ancho/alto al editar. |
+| Permitir rotación         | Checkbox                                             | Activado       | Sí | Desbloquea layouts rotados y combinaciones híbridas. |
+| Margen uniforme (mm)      | Número entero (paso 1)                               | 5              | Sí | Aplica a los cuatro lados; siempre en mm. |
+| Espacio horizontal (mm)   | Número                                               | 3              | Sí | Separación entre columnas, ≥ 0. |
+| Espacio vertical (mm)     | Número                                               | 3              | Sí | Separación entre filas, ≥ 0. |
+| Mantener espacios iguales | Checkbox                                             | Activado       | No | Sincroniza ambos gaps; cambiar uno replica el otro. |
+
+Las validaciones se ejecutan al escribir o salir de cada campo y publican mensajes con `aria-live="polite"`. No existe botón de envío: la app recalcula en caliente cuando los datos son válidos.
+
+## Métricas y previsualización
+- **Copias**: total del layout activo (muestra la cifra estricta como referencia cuando la optimización gana).
+- **Uso área**: porcentaje de área imprimible cubierta por las copias.
+- **Desperdicio**: complemento al 100 % del uso.
+
+Las tarjetas SVG muestran el contorno de la hoja, el área imprimible y cada segmento de piezas. El modo estricto usa relleno sólido; los segmentos rotados emplean la misma paleta con ligera variación de opacidad para identificarlos sin introducir líneas punteadas.
+
+## Temas y accesibilidad
+- Variables CSS definen colores, superficies y patrones; los temas claro/oscuro sobrescriben este set manteniendo contraste AA.
+- El switch de tema en el encabezado usa `role="switch"`, `aria-checked` y persistencia en `localStorage`; el script inline lo aplica antes de que cargue el CSS para evitar parpadeos.
+- Todos los campos tienen área táctil ≥ 11 mm, foco visible y ayudas contextuales. El orden de tabulación es lineal y los mensajes de error se anuncian sin bloquear la interacción.
+
+## Orden sugerido de implementación
+1. Maquetar `index.html` y estilos base (grid, tipografías, tokens de tema).
+2. Implementar `ThemeController` y el switch claro/oscuro.
+3. Construir `StateStore`, enlazar los campos del formulario y validar entradas.
+4. Incorporar `CalculatorCore` con layouts estricto, rotado e híbrido.
+5. Añadir `PreviewRenderer`, badges y métricas sincronizadas.
+6. Ajustar responsividad, contraste WCAG y verificar accesibilidad (lectores de pantalla, `aria-live`, foco).
+
+> Nota: README y `help.html` se actualizan con cada cambio funcional para que la documentación refleje el estado real de la app.
 # Calculadora de Disposición de Área
 
 Aplicación de una sola página (HTML/CSS/JS) para talleres de sublimación o estampado que necesitan saber cuántas piezas caben en una hoja imprimible. Todo corre en el navegador, sin instalaciones, priorizando accesibilidad, contraste y portabilidad.
