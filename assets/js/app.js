@@ -7,11 +7,10 @@
   const previewContainer = document.getElementById('previewContainer');
   const sheetDimensionsRow = document.querySelector('.sheet-dimensions');
   const unitFieldset = document.getElementById('unitSelector');
-    const unitGroups = {
-      sheet: Array.from(document.querySelectorAll('[data-unit-group="sheet"] button')),
-      image: Array.from(document.querySelectorAll('[data-unit-group="image"] button'))
-    };
-    const unitButtons = [...unitGroups.sheet, ...unitGroups.image];
+  const unitGroups = {
+    sheet: Array.from(document.querySelectorAll('[data-unit-group="sheet"] button')),
+    image: Array.from(document.querySelectorAll('[data-unit-group="image"] button'))
+  };
   const themeToggle = document.getElementById('themeToggle');
   const helperTexts = Array.from(document.querySelectorAll('.helper-text[data-field]'));
 
@@ -66,7 +65,8 @@
   }
 
   const state = {
-    unit: 'mm',
+    sheetUnit: 'mm',
+    imageUnit: 'mm',
     sheet: { width: 210, height: 297 },
     image: { width: NaN, height: NaN },
     canonical: {
@@ -101,8 +101,12 @@
   });
 
   /* Unit handling */
-  unitButtons.forEach((btn) => {
-    btn.addEventListener('click', () => setUnit(btn.dataset.unit));
+  unitGroups.sheet.forEach((btn) => {
+    btn.addEventListener('click', () => setSheetUnit(btn.dataset.unit));
+  });
+
+  unitGroups.image.forEach((btn) => {
+    btn.addEventListener('click', () => setImageUnit(btn.dataset.unit));
   });
 
   function roundForUnit(value, unit) {
@@ -129,6 +133,12 @@
     return value / UNIT_FACTORS_MM[unit];
   }
 
+  function unitForKey(key) {
+    if (key === 'sheetWidth' || key === 'sheetHeight') return state.sheetUnit;
+    if (key === 'imageWidth' || key === 'imageHeight') return state.imageUnit;
+    return null;
+  }
+
   function ensureAspectRatio() {
     if (!state.lockRatio) return null;
     if (state.aspectRatio && Number.isFinite(state.aspectRatio) && state.aspectRatio > 0) {
@@ -143,19 +153,29 @@
     return null;
   }
 
-  function setUnit(unit) {
-    if (unit === state.unit) return;
-    state.unit = unit;
+  function setSheetUnit(unit) {
+    if (unit === state.sheetUnit) return;
+    state.sheetUnit = unit;
     state.sheet.width = roundForUnit(fromMillimeters(state.canonical.sheet.width, unit), unit);
     state.sheet.height = roundForUnit(fromMillimeters(state.canonical.sheet.height, unit), unit);
+    syncForm();
+  }
+
+  function setImageUnit(unit) {
+    if (unit === state.imageUnit) return;
+    state.imageUnit = unit;
     state.image.width = roundForUnit(fromMillimeters(state.canonical.image.width, unit), unit);
     state.image.height = roundForUnit(fromMillimeters(state.canonical.image.height, unit), unit);
     syncForm();
   }
 
   function syncUnitButtons() {
-    unitButtons.forEach((btn) => {
-      const checked = btn.dataset.unit === state.unit;
+    unitGroups.sheet.forEach((btn) => {
+      const checked = btn.dataset.unit === state.sheetUnit;
+      btn.setAttribute('aria-checked', checked);
+    });
+    unitGroups.image.forEach((btn) => {
+      const checked = btn.dataset.unit === state.imageUnit;
       btn.setAttribute('aria-checked', checked);
     });
   }
@@ -170,8 +190,8 @@
       if (preset) {
         state.canonical.sheet.width = preset.width;
         state.canonical.sheet.height = preset.height;
-        state.sheet.width = roundForUnit(fromMillimeters(preset.width, state.unit), state.unit);
-        state.sheet.height = roundForUnit(fromMillimeters(preset.height, state.unit), state.unit);
+        state.sheet.width = roundForUnit(fromMillimeters(preset.width, state.sheetUnit), state.sheetUnit);
+        state.sheet.height = roundForUnit(fromMillimeters(preset.height, state.sheetUnit), state.sheetUnit);
       }
     }
     updateSheetInputsLock();
@@ -240,10 +260,11 @@
     }
     const val = parseFloat(input.value);
     let normalized = val;
-    if (['sheetWidth', 'sheetHeight', 'imageWidth', 'imageHeight'].includes(key)) {
-      if (state.unit === 'mm') {
+    const fieldUnit = unitForKey(key);
+    if (fieldUnit) {
+      if (fieldUnit === 'mm') {
         normalized = Math.round(val);
-      } else if (state.unit === 'cm' || state.unit === 'in') {
+      } else if (fieldUnit === 'cm' || fieldUnit === 'in') {
         normalized = Math.round(val * 10) / 10;
       }
       if (!Number.isNaN(normalized)) input.value = normalized;
@@ -259,12 +280,12 @@
         if (key === 'imageWidth') {
           const updatedWidthMm = state.canonical.image.width;
           const nextHeight = updatedWidthMm / ratio;
-          const nextHeightDisplay = roundForUnit(fromMillimeters(nextHeight, state.unit), state.unit);
+          const nextHeightDisplay = roundForUnit(fromMillimeters(nextHeight, state.imageUnit), state.imageUnit);
           setStateValue('imageHeight', nextHeightDisplay);
         } else {
           const updatedHeightMm = state.canonical.image.height;
           const nextWidth = updatedHeightMm * ratio;
-          const nextWidthDisplay = roundForUnit(fromMillimeters(nextWidth, state.unit), state.unit);
+          const nextWidthDisplay = roundForUnit(fromMillimeters(nextWidth, state.imageUnit), state.imageUnit);
           setStateValue('imageWidth', nextWidthDisplay);
         }
         syncForm();
@@ -283,15 +304,15 @@
     switch (key) {
       case 'sheetWidth':
         state.sheet.width = value;
-        state.canonical.sheet.width = toMillimeters(value, state.unit);
+        state.canonical.sheet.width = Number.isFinite(value) ? toMillimeters(value, state.sheetUnit) : NaN;
         break;
       case 'sheetHeight':
         state.sheet.height = value;
-        state.canonical.sheet.height = toMillimeters(value, state.unit);
+        state.canonical.sheet.height = Number.isFinite(value) ? toMillimeters(value, state.sheetUnit) : NaN;
         break;
       case 'imageWidth':
         state.image.width = value;
-        state.canonical.image.width = Number.isFinite(value) ? toMillimeters(value, state.unit) : NaN;
+        state.canonical.image.width = Number.isFinite(value) ? toMillimeters(value, state.imageUnit) : NaN;
         if (!state.lockRatio) {
           state.aspectRatio = null;
         } else if (!Number.isFinite(state.canonical.image.width) || !Number.isFinite(state.canonical.image.height)) {
@@ -300,7 +321,7 @@
         break;
       case 'imageHeight':
         state.image.height = value;
-        state.canonical.image.height = Number.isFinite(value) ? toMillimeters(value, state.unit) : NaN;
+        state.canonical.image.height = Number.isFinite(value) ? toMillimeters(value, state.imageUnit) : NaN;
         if (!state.lockRatio) {
           state.aspectRatio = null;
         } else if (!Number.isFinite(state.canonical.image.width) || !Number.isFinite(state.canonical.image.height)) {
@@ -342,14 +363,15 @@
   function validateField(key, input) {
     const textEl = helperTexts.find((el) => el.dataset.field === key);
     if (!textEl) return;
-    const limits = LIMITS[state.unit];
     let message = '';
     const val = parseFloat(input.value);
     if (Number.isNaN(val)) {
       message = 'Requerido.';
     } else if (['sheetWidth', 'sheetHeight', 'imageWidth', 'imageHeight'].includes(key)) {
-      if (val < limits.min || val > limits.max) {
-        message = `Debe estar entre ${limits.min} y ${limits.max} ${state.unit}.`;
+      const unit = unitForKey(key) || state.sheetUnit;
+      const limits = LIMITS[unit];
+      if (limits && (val < limits.min || val > limits.max)) {
+        message = `Debe estar entre ${limits.min} y ${limits.max} ${unit}.`;
       }
     } else if (val < 0) {
       message = 'Debe ser positivo.';
@@ -753,12 +775,19 @@
   }
 
   function updateDimensionSteps() {
-    const stepValue = dimensionStepForUnit(state.unit);
-    const minValue = LIMITS[state.unit]?.min ?? 0.01;
-    ['sheetWidth', 'sheetHeight', 'imageWidth', 'imageHeight'].forEach((key) => {
+    const sheetStep = dimensionStepForUnit(state.sheetUnit);
+    const sheetMin = LIMITS[state.sheetUnit]?.min ?? 0.01;
+    ['sheetWidth', 'sheetHeight'].forEach((key) => {
       if (!inputs[key]) return;
-      inputs[key].setAttribute('step', stepValue);
-      inputs[key].setAttribute('min', minValue);
+      inputs[key].setAttribute('step', sheetStep);
+      inputs[key].setAttribute('min', sheetMin);
+    });
+    const imageStep = dimensionStepForUnit(state.imageUnit);
+    const imageMin = LIMITS[state.imageUnit]?.min ?? 0.01;
+    ['imageWidth', 'imageHeight'].forEach((key) => {
+      if (!inputs[key]) return;
+      inputs[key].setAttribute('step', imageStep);
+      inputs[key].setAttribute('min', imageMin);
     });
   }
 

@@ -54,15 +54,16 @@
             </select>
           </div>
 
-          <fieldset id="unitSelector" class="field-group" aria-describedby="unitHint">
-            <legend>Unidad</legend>
-            <div class="segmented" data-unit-group="sheet" role="radiogroup" aria-label="Unidad">
-              <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
-              <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
-              <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+          <div id="unitSelector" class="composite-group sheet-unit-group">
+            <div class="field-group__header-row">
+              <span class="field-group__title">Unidad</span>
+              <div class="segmented segmented--mini" data-unit-group="sheet" role="radiogroup" aria-label="Unidad de hoja">
+                <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
+                <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
+                <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+              </div>
             </div>
-            <p id="unitHint" class="helper-text">La conversión conserva los valores al cambiar de unidad.</p>
-          </fieldset>
+          </div>
 
           <div class="field-pair sheet-dimensions">
             <div class="field-group">
@@ -89,7 +90,7 @@
 
           <div class="composite-group image-dimensions-group">
             <div class="field-group__header-row">
-              <span class="field-group__title">Dimensiones imagen</span>
+              <span class="field-group__title">Unidad</span>
               <div class="segmented segmented--mini" id="imageUnitSelector" data-unit-group="image" role="radiogroup" aria-label="Unidad de imagen">
                 <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
                 <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
