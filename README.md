@@ -30,9 +30,10 @@ Los controles viven en la columna izquierda. Valores iniciales: hoja A4, unidad 
 | Campo                     | Tipo / Opciones                                      | Predeterminado | Obligatorio | Notas |
 |---------------------------|------------------------------------------------------|----------------|-------------|-------|
 | Formato de hoja           | select (Carta, Oficio, Tabloide, A4, A3, A3+, Personalizada) | A4 | Sí | Cada preset rellena ancho/alto; solo “Personalizada” permite editarlos. |
+| Unidad (hoja)             | Control segmentado compacto (in / cm / mm)           | mm             | Sí | Se oculta si no estás en formato personalizado. Cambiarlo convierte ancho/alto en caliente. |
 | Ancho / Alto de hoja      | Números sincronizados con la unidad                  | Según preset   | Sí | Rangos: 1‑40 in, 1‑100 cm o 1‑1000 mm. Bloqueados salvo preset personalizado. |
-| Unidad                    | Control segmentado (in / cm / mm)                    | mm             | Sí | Cambiar unidad convierte todos los campos con redondeo apropiado. |
-| Ancho / Alto de imagen    | Número                                               | Vacío          | Sí | Deben ser > 0 y caber en el área imprimible. |
+| Unidad (imagen)           | Control segmentado compacto (in / cm / mm)           | mm             | Sí | Independiente del selector de hoja; ideal si la referencia de la imagen viene en otra unidad. |
+| Ancho / Alto de imagen    | Número                                               | Vacío          | Sí | Deben ser > 0 y caber en el área imprimible; convierten al vuelo según la unidad de imagen. |
 | Mantener proporción       | Checkbox                                             | Desactivado    | No | Bloquea la relación ancho/alto al editar. |
 | Permitir rotación         | Checkbox                                             | Activado       | Sí | Desbloquea layouts rotados y combinaciones híbridas. |
 | Margen uniforme (mm)      | Número entero (paso 1)                               | 5              | Sí | Aplica a los cuatro lados; siempre en mm. |
@@ -97,9 +98,10 @@ Todos los campos viven en la columna izquierda. Valores por defecto al cargar: h
 | Campo                  | Tipo / Opciones                                      | Predeterminado | Obligatorio | Notas |
 |------------------------|------------------------------------------------------|----------------|-------------|-------|
 | Formato de hoja        | select (Carta, Oficio, Tabloide, A4, A3, A3+, Personalizada) | A4 | Sí | Cada preset rellena ancho/alto; solo “Personalizada” permite editarlos. |
-| Ancho / Alto de hoja   | Número + selector de unidad (in, cm, mm)             | Desde preset   | Sí | Rangos: 1-40 in, 1-100 cm, 1-1000 mm. Bloqueado salvo preset personalizado. |
-| Unidad                 | Control segmentado (radiogrupo)                      | in             | Sí | Cambiar unidad convierte los valores en caliente (mm en enteros, in/cm a décimas). |
-| Ancho / Alto de imagen | Número                                               | Vacío          | Sí | Deben ser > 0 y caber dentro del área imprimible. |
+| Unidad (hoja)          | Control segmentado compacto (in / cm / mm)           | mm             | Sí | Visible únicamente al elegir “Personalizada”. Convierte ancho/alto en caliente. |
+| Ancho / Alto de hoja   | Número                                               | Desde preset   | Sí | Rangos: 1-40 in, 1-100 cm, 1-1000 mm. Bloqueado salvo preset personalizado. |
+| Unidad (imagen)        | Control segmentado compacto (in / cm / mm)           | mm             | Sí | Gestiona las medidas de imagen de forma independiente al selector de hoja. |
+| Ancho / Alto de imagen | Número                                               | Vacío          | Sí | Deben ser > 0 y caber dentro del área imprimible; se convierten según la unidad elegida. |
 | Mantener proporción    | Checkbox                                             | Desactivado    | No | Bloquea la relación al editar ancho/alto. |
 | Permitir rotación      | Checkbox                                             | Activado       | Sí | Habilita rotar las piezas 90°. |
 | Margen (mm)            | Número entero (paso 1)                               | 5 mm           | Sí | Aplica a los cuatro lados; siempre en milímetros. |
