@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Disposición</title>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script>
+      (function () {
+        try {
+          var stored = window.localStorage.getItem('theme');
+          if (stored) {
+            document.documentElement.setAttribute('data-theme', stored);
+            return;
+          }
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        } catch (err) {
+          /* no-op */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="branding">
+        <h1>Calculadora de área imprimible</h1>
+        <p>Sublimación y estampado sin instalación</p>
+      </div>
+      <button type="button" class="theme-switch" aria-label="Cambiar tema" role="switch" aria-checked="false" id="themeToggle">
+        <span class="theme-switch__icon" aria-hidden="true">◑</span>
+        <span class="theme-switch__label">Claro</span>
+      </button>
+    </header>
+
+    <main class="app-shell">
+      <section class="panel form-panel" aria-labelledby="formTitle">
+        <div class="panel-header">
+          <h2 id="formTitle">Parámetros</h2>
+        </div>
+        <form id="layoutForm" novalidate>
+          <div class="field-group">
+            <label for="sheetPreset">Formato de hoja</label>
+            <select id="sheetPreset" name="sheetPreset">
+              <option value="letter">Carta (8.5 × 11 in)</option>
+              <option value="legal">Oficio (8.5 × 14 in)</option>
+              <option value="tabloid">Tabloide (11 × 17 in)</option>
+              <option value="a4" selected>A4 (210 × 297 mm)</option>
+              <option value="a3">A3 (297 × 420 mm)</option>
+              <option value="a3plus">A3+ (329 × 483 mm)</option>
+              <option value="custom">Personalizada</option>
+            </select>
+          </div>
+
+          <fieldset class="field-group" aria-describedby="unitHint">
+            <legend>Unidad</legend>
+            <div class="segmented" role="radiogroup" aria-label="Unidad">
+              <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
+              <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
+              <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+            </div>
+            <p id="unitHint" class="helper-text">La conversión conserva los valores al cambiar de unidad.</p>
+          </fieldset>
+
+          <div class="field-pair sheet-dimensions">
+            <div class="field-group">
+              <label for="sheetWidth">Ancho hoja</label>
+              <input id="sheetWidth" name="sheetWidth" type="number" step="0.01" min="1" />
+              <p class="helper-text" data-field="sheetWidth"></p>
+            </div>
+            <div class="field-group">
+              <label for="sheetHeight">Alto hoja</label>
+              <input id="sheetHeight" name="sheetHeight" type="number" step="0.01" min="1" />
+              <p class="helper-text" data-field="sheetHeight"></p>
+            </div>
+          </div>
+
+          <div class="field-pair margin-row">
+            <div class="field-group">
+              <label for="margin">Margen (mm)</label>
+              <input id="margin" name="margin" type="number" step="1" min="0" value="5" />
+            </div>
+            <div class="field-group field-group--spacer" aria-hidden="true"></div>
+          </div>
+
+          <div class="separator" role="presentation"></div>
+
+          <div class="field-pair">
+            <div class="field-group">
+              <label for="imageWidth">Ancho imagen</label>
+              <input id="imageWidth" name="imageWidth" type="number" step="0.01" min="0.01" required />
+              <p class="helper-text" data-field="imageWidth"></p>
+            </div>
+            <div class="field-group">
+              <label for="imageHeight">Alto imagen</label>
+              <input id="imageHeight" name="imageHeight" type="number" step="0.01" min="0.01" required />
+              <p class="helper-text" data-field="imageHeight"></p>
+            </div>
+          </div>
+
+          <div class="field-group checkbox-group">
+            <input type="checkbox" id="lockRatio" name="lockRatio" />
+            <label for="lockRatio">Mantener proporción</label>
+          </div>
+
+          <div class="field-group checkbox-group">
+            <input type="checkbox" id="allowRotation" name="allowRotation" checked />
+            <label for="allowRotation">Permitir rotación</label>
+          </div>
+
+          <div class="separator" role="presentation"></div>
+
+          <div class="field-pair">
+            <div class="field-group">
+              <label for="gapX">Espacio horizontal (mm)</label>
+              <input id="gapX" name="gapX" type="number" step="0.1" min="0" value="3" />
+            </div>
+            <div class="field-group">
+              <label for="gapY">Espacio vertical (mm)</label>
+              <input id="gapY" name="gapY" type="number" step="0.1" min="0" value="3" />
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <div class="status" id="formStatus" aria-live="polite"></div>
+            <button type="submit" class="primary">Actualizar diseño</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel metrics-panel" aria-labelledby="metricsTitle">
+        <div class="panel-header">
+          <h2 id="metricsTitle">Métricas</h2>
+        </div>
+        <dl class="metrics" id="metricsList">
+          <div>
+            <dt>Copias:</dt>
+            <dd id="metricPieces">--</dd>
+          </div>
+          <div>
+            <dt>Disposición:</dt>
+            <dd id="metricGrid">--</dd>
+          </div>
+          <div>
+            <dt>Uso área:</dt>
+            <dd id="metricUsage">--</dd>
+          </div>
+          <div>
+            <dt>Desperdicio</dt>
+            <dd id="metricWaste">--</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="panel preview-panel" aria-labelledby="previewTitle">
+        <div class="panel-header">
+          <h2 id="previewTitle">Previsualización</h2>
+          <div class="legend">
+            <span class="legend-item legend-strict">Estricto</span>
+            <span class="legend-item legend-optimized">Optimizado</span>
+          </div>
+        </div>
+        <div id="previewContainer" class="preview-container" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="assets/js/app.js" defer></script>
+  </body>
+</html>

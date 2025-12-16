@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guía de uso · Calculadora de área imprimible</title>
+    <style>
+      :root {
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        color: #101828;
+        background: #f7f8fb;
+      }
+      body {
+        margin: 0;
+        padding: 2.5rem clamp(1.5rem, 6vw, 4rem);
+        line-height: 1.5;
+        max-width: 960px;
+      }
+      h1,
+      h2,
+      h3 {
+        color: #0b192f;
+        line-height: 1.2;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      section {
+        margin-bottom: 2.25rem;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid #d5d9e3;
+      }
+      section:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      dl {
+        margin: 1rem 0;
+      }
+      dt {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+      dd {
+        margin: 0.35rem 0 0 0;
+        color: #4c576a;
+      }
+      .tip {
+        background: #eef5ff;
+        border-left: 4px solid #1a6ae2;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+        color: #1d3a5f;
+      }
+      ul {
+        padding-left: 1.25rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Guía de ayuda rápida</h1>
+    <p>
+      Esta calculadora estima cuántas copias de una imagen caben en una hoja para sublimación o
+      estampado. Ingresa las medidas de tu hoja e imagen, ajusta los márgenes y la separación, y compara
+      dos estrategias: <strong>Estricto</strong> (sin rotaciones) y <strong>Optimizado</strong> (permite girar 90° para ganar piezas).
+    </p>
+
+    <section>
+      <h2>Panel “Parámetros”</h2>
+      <p>Todo lo necesario para describir tu hoja y la imagen a repetir.</p>
+      <dl>
+        <dt>Formato de hoja</dt>
+        <dd>
+          Lista de presets (Carta, Oficio, Tabloide, A4, A3, A3+, Personalizada). Cada opción rellena ancho y alto en milímetros. Elige “Personalizada” para desbloquear y escribir tus propios valores.
+        </dd>
+        <dt>Unidad</dt>
+        <dd>
+          Selector segmentado entre pulgadas, centímetros o milímetros. La app convierte automáticamente todos los campos al cambiar de unidad, conservando la proporción exacta.
+        </dd>
+        <dt>Ancho / Alto de hoja</dt>
+        <dd>
+          Medidas de la hoja en la unidad seleccionada. Se bloquean si usas un preset y se activan en modo “Personalizada”. Los rangos válidos son 1–40 in, 1–100 cm o 1–1000 mm.
+        </dd>
+        <dt>Margen (mm)</dt>
+        <dd>
+          Borde de seguridad aplicado por todos los lados de la hoja. Siempre se introduce en milímetros y admite solo enteros. El valor predeterminado es 5 mm.
+        </dd>
+        <dt>Ancho / Alto de imagen</dt>
+        <dd>
+          Dimensiones de la pieza a repetir. Deben ser mayores que cero y caber dentro del área imprimible restante después de aplicar márgenes y separaciones.
+        </dd>
+        <dt>Mantener proporción</dt>
+        <dd>
+          Activa un bloqueo de aspecto: al modificar una dimensión la otra se recalcula automáticamente usando la proporción actual.
+        </dd>
+        <dt>Permitir rotación</dt>
+        <dd>
+          Cuando está habilitado, la app comprueba también la versión rotada (90°) para encontrar más copias posibles.
+        </dd>
+        <dt>Espacio horizontal / vertical</dt>
+        <dd>
+          Distancia mínima entre copias. Se ingresa en milímetros y puede ser cero para diseños sin separación.
+        </dd>
+        <dt>Actualizar diseño</dt>
+        <dd>
+          Calcula nuevamente ambas estrategias. El botón se desactiva si falta información obligatoria o hay errores de validación.
+        </dd>
+      </dl>
+      <div class="tip">
+        Consejo: si tus valores no cambian al escribir, revisa que no tengas un preset bloqueando el campo y que los límites (mostrados en cada ayuda contextual) estén dentro del rango aceptado.
+      </div>
+    </section>
+
+    <section>
+      <h2>Panel “Métricas”</h2>
+      <dl>
+        <dt>Copias</dt>
+        <dd>
+          Número total de piezas que entran según la mejor estrategia. Cuando el modo Optimizado supera al Estricto, se muestra una nota debajo con el resultado estricto para que compares.
+        </dd>
+        <dt>Disposición</dt>
+        <dd>
+          Desglose en filas × columnas de la estrategia ganadora. La nota secundaria indica la cuadrícula del modo alternativo cuando existe una mejora.
+        </dd>
+        <dt>Uso área</dt>
+        <dd>
+          Porcentaje del área imprimible ocupado por copias. Sirve para medir la eficiencia del layout.
+        </dd>
+        <dt>Desperdicio</dt>
+        <dd>
+          100% menos el uso del área. Te ayuda a entender cuánta hoja queda libre o se descarta.
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Panel “Previsualización”</h2>
+      <p>
+        Muestra un boceto proporcional de la hoja. Las líneas diagonales azules indican el modo Estricto; el patrón de puntos naranja identifica el modo Optimizado cuando aporta más copias. Cada tarjeta incluye una insignia con el beneficio en piezas (+N) y en porcentaje cuando existe una mejora.
+      </p>
+      <ul>
+        <li><strong>Zona clara:</strong> es el área aprovechable después de descontar el margen.</li>
+        <li><strong>Recuadros:</strong> representan las copias; su densidad refleja la separación horizontal y vertical elegida.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Tema y accesibilidad</h2>
+      <dl>
+        <dt>Switch de tema</dt>
+        <dd>
+          Vive en el encabezado y alterna entre modo claro y oscuro. La preferencia se guarda en el navegador, así que la app abre siempre con tu selección más reciente.
+        </dd>
+        <dt>Atajos de teclado</dt>
+        <dd>
+          Todos los campos siguen el orden natural de tabulación. Usa <kbd>Shift + Tab</kbd> para retroceder, y las flechas en los inputs numéricos para ajustar de a un paso.
+        </dd>
+        <dt>Mensajes de ayuda</dt>
+        <dd>
+          Cada campo muestra límites y errores justo debajo, y se anuncian mediante un área con <code>aria-live="polite"</code> para lectores de pantalla.
+        </dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Flujo sugerido</h2>
+      <ol>
+        <li>Elige el formato de hoja más cercano o activa “Personalizada”.</li>
+        <li>Define la unidad que prefieras trabajar; la app mantiene las conversiones por ti.</li>
+        <li>Ajusta el margen y los espacios para reflejar tu tolerancia de corte.</li>
+        <li>Introduce las medidas de la imagen y, si es necesario, activa “Mantener proporción”.</li>
+        <li>Decide si vale la pena considerar rotaciones y deja marcado “Permitir rotación” salvo que tu diseño no admita giros.</li>
+        <li>Presiona “Actualizar diseño” y revisa el panel de métricas junto con la previsualización.</li>
+      </ol>
+    </section>
+
+    <p>
+      ¿Dudas adicionales? Revisa el archivo <code>README.md</code> dentro del proyecto para detalles técnicos o abre un issue en tu repositorio personal si necesitas una mejora específica.
+    </p>
+  </body>
+</html>
