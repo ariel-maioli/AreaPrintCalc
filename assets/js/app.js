@@ -6,6 +6,7 @@
   const metricWaste = document.getElementById('metricWaste');
   const previewContainer = document.getElementById('previewContainer');
   const sheetDimensionsRow = document.querySelector('.sheet-dimensions');
+  const unitFieldset = document.getElementById('unitSelector');
   const unitButtons = Array.from(document.querySelectorAll('.segmented button'));
   const themeToggle = document.getElementById('themeToggle');
   const helperTexts = Array.from(document.querySelectorAll('.helper-text[data-field]'));
@@ -179,10 +180,12 @@
       inputs.sheetWidth.setAttribute('disabled', 'true');
       inputs.sheetHeight.setAttribute('disabled', 'true');
       if (sheetDimensionsRow) sheetDimensionsRow.setAttribute('data-hidden', 'true');
+      if (unitFieldset) unitFieldset.setAttribute('data-hidden', 'true');
     } else {
       inputs.sheetWidth.removeAttribute('disabled');
       inputs.sheetHeight.removeAttribute('disabled');
       if (sheetDimensionsRow) sheetDimensionsRow.removeAttribute('data-hidden');
+      if (unitFieldset) unitFieldset.removeAttribute('data-hidden');
     }
   }
 
