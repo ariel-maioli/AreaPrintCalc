@@ -6,7 +6,7 @@ Aplicación SPA (HTML/CSS/JS) para talleres de sublimación o estampado que dese
 - Evaluar dos estrategias:
   - **Modo estricto**: cuadrícula alineada a los ejes, sin rotación.
   - **Modo optimizado**: compara la versión rotada y agrega franjas híbridas que combinan ambas orientaciones para aprovechar los residuos.
-- Mostrar como máximo dos previsualizaciones y añadir un badge `+N piezas (+X%)` solo cuando el modo optimizado supera al estricto.
+- Mostrar como máximo dos previsualizaciones, priorizando la tarjeta del modo optimizado (si existe) y añadiendo un badge `+N piezas (+X%)` solo cuando supera al estricto.
 - Ofrecer un panel de métricas compacto con copias totales, uso del área y desperdicio (cada métrica incluye la referencia estricta cuando hay mejora).
 - Recalcular automáticamente al modificar cualquier campo, sin botones extras ni flujos de envío.
 - Mantener temas claro/oscuro accesibles y patrones reconocibles para distinguir los modos.

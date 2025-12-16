@@ -585,10 +585,12 @@
       return;
     }
     const showOptimized = results.optimized.total > results.strict.total;
-    previewContainer.appendChild(createCard('strict', results.strict));
     if (showOptimized) {
-      previewContainer.appendChild(createCard('optimized', results.optimized, results.optimized.total - results.strict.total, results));
+      previewContainer.appendChild(
+        createCard('optimized', results.optimized, results.optimized.total - results.strict.total, results)
+      );
     }
+    previewContainer.appendChild(createCard('strict', results.strict));
   }
 
   function createCard(type, data, gain = 0, allResults) {
