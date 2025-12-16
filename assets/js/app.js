@@ -7,7 +7,11 @@
   const previewContainer = document.getElementById('previewContainer');
   const sheetDimensionsRow = document.querySelector('.sheet-dimensions');
   const unitFieldset = document.getElementById('unitSelector');
-  const unitButtons = Array.from(document.querySelectorAll('.segmented button'));
+    const unitGroups = {
+      sheet: Array.from(document.querySelectorAll('[data-unit-group="sheet"] button')),
+      image: Array.from(document.querySelectorAll('[data-unit-group="image"] button'))
+    };
+    const unitButtons = [...unitGroups.sheet, ...unitGroups.image];
   const themeToggle = document.getElementById('themeToggle');
   const helperTexts = Array.from(document.querySelectorAll('.helper-text[data-field]'));
 

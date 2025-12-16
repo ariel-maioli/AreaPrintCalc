@@ -56,7 +56,7 @@
 
           <fieldset id="unitSelector" class="field-group" aria-describedby="unitHint">
             <legend>Unidad</legend>
-            <div class="segmented" role="radiogroup" aria-label="Unidad">
+            <div class="segmented" data-unit-group="sheet" role="radiogroup" aria-label="Unidad">
               <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
               <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
               <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
@@ -87,16 +87,26 @@
 
           <div class="separator" role="presentation"></div>
 
-          <div class="field-pair">
-            <div class="field-group">
-              <label for="imageWidth">Ancho imagen</label>
-              <input id="imageWidth" name="imageWidth" type="number" step="0.01" min="0.01" required />
-              <p class="helper-text" data-field="imageWidth"></p>
+          <div class="composite-group image-dimensions-group">
+            <div class="field-group__header-row">
+              <span class="field-group__title">Dimensiones imagen</span>
+              <div class="segmented segmented--mini" id="imageUnitSelector" data-unit-group="image" role="radiogroup" aria-label="Unidad de imagen">
+                <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
+                <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
+                <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+              </div>
             </div>
-            <div class="field-group">
-              <label for="imageHeight">Alto imagen</label>
-              <input id="imageHeight" name="imageHeight" type="number" step="0.01" min="0.01" required />
-              <p class="helper-text" data-field="imageHeight"></p>
+            <div class="field-pair image-dimensions">
+              <div class="field-group">
+                <label for="imageWidth">Ancho imagen</label>
+                <input id="imageWidth" name="imageWidth" type="number" step="0.01" min="0.01" required />
+                <p class="helper-text" data-field="imageWidth"></p>
+              </div>
+              <div class="field-group">
+                <label for="imageHeight">Alto imagen</label>
+                <input id="imageHeight" name="imageHeight" type="number" step="0.01" min="0.01" required />
+                <p class="helper-text" data-field="imageHeight"></p>
+              </div>
             </div>
           </div>
 

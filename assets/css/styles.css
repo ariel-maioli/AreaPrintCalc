@@ -158,6 +158,10 @@ select {
   gap: var(--space-3);
 }
 
+.form-panel .composite-group {
+  margin-bottom: var(--space-3);
+}
+
 .form-panel fieldset {
   padding: var(--space-2);
 }
@@ -194,6 +198,24 @@ select {
 fieldset legend {
   font-weight: 600;
   margin-bottom: var(--space-1);
+}
+
+.composite-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-4);
+}
+
+.field-group__header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.field-group__title {
+  font-weight: 600;
 }
 
 input[type="number"],
@@ -238,6 +260,15 @@ button:focus-visible {
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   overflow: hidden;
+}
+
+.segmented--mini {
+  border-radius: 999px;
+}
+
+.segmented--mini button {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
 }
 
 .segmented button {
