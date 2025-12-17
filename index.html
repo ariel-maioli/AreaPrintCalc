@@ -41,102 +41,104 @@
           <h2 id="formTitle">Parámetros</h2>
         </div>
         <form id="layoutForm" novalidate>
-          <div class="field-group">
-            <label for="sheetPreset">Formato de hoja</label>
-            <select id="sheetPreset" name="sheetPreset">
-              <option value="letter">Carta (8.5 × 11 in)</option>
-              <option value="legal">Oficio (8.5 × 14 in)</option>
-              <option value="tabloid">Tabloide (11 × 17 in)</option>
-              <option value="a4" selected>A4 (210 × 297 mm)</option>
-              <option value="a3">A3 (297 × 420 mm)</option>
-              <option value="a3plus">A3+ (329 × 483 mm)</option>
-              <option value="custom">Personalizada</option>
-            </select>
-          </div>
+          <div class="param-section" aria-labelledby="sheetSectionTitle">
+            <div class="param-section__header" aria-hidden="true"></div>
+            <div class="field-group field-group--select-compact">
+              <label for="sheetPreset">Formato de hoja</label>
+              <select id="sheetPreset" name="sheetPreset">
+                <option value="letter">Carta (8.5 × 11 in)</option>
+                <option value="legal">Oficio (8.5 × 14 in)</option>
+                <option value="tabloid">Tabloide (11 × 17 in)</option>
+                <option value="a4" selected>A4 (210 × 297 mm)</option>
+                <option value="a3">A3 (297 × 420 mm)</option>
+                <option value="a3plus">A3+ (329 × 483 mm)</option>
+                <option value="custom">Personalizada</option>
+              </select>
+            </div>
 
-          <div id="unitSelector" class="composite-group sheet-unit-group">
-            <div class="field-group__header-row">
-              <span class="field-group__title">Unidad</span>
-              <div class="segmented segmented--mini" data-unit-group="sheet" role="radiogroup" aria-label="Unidad de hoja">
-                <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
-                <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
-                <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+            <div id="unitSelector" class="composite-group sheet-unit-group">
+              <div class="field-group__header-row">
+                <span class="field-group__title">Unidad</span>
+                <div class="segmented segmented--mini" data-unit-group="sheet" role="radiogroup" aria-label="Unidad de hoja">
+                  <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
+                  <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
+                  <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="field-pair sheet-dimensions">
-            <div class="field-group">
-              <label for="sheetWidth">Ancho hoja</label>
-              <input id="sheetWidth" name="sheetWidth" type="number" step="0.01" min="1" />
-              <p class="helper-text" data-field="sheetWidth"></p>
-            </div>
-            <div class="field-group">
-              <label for="sheetHeight">Alto hoja</label>
-              <input id="sheetHeight" name="sheetHeight" type="number" step="0.01" min="1" />
-              <p class="helper-text" data-field="sheetHeight"></p>
-            </div>
-          </div>
-
-          <div class="field-pair margin-row">
-            <div class="field-group">
-              <label for="margin">Margen único (mm)</label>
-              <input id="margin" name="margin" type="number" step="1" min="0" value="5" />
-            </div>
-            <div class="field-group field-group--spacer" aria-hidden="true"></div>
-          </div>
-
-          <div class="separator" role="presentation"></div>
-
-          <div class="composite-group image-dimensions-group">
-            <div class="field-group__header-row">
-              <span class="field-group__title">Unidad</span>
-              <div class="segmented segmented--mini" id="imageUnitSelector" data-unit-group="image" role="radiogroup" aria-label="Unidad de imagen">
-                <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
-                <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
-                <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
-              </div>
-            </div>
-            <div class="field-pair image-dimensions">
+            <div class="field-pair sheet-dimensions">
               <div class="field-group">
-                <label for="imageWidth">Ancho imagen</label>
-                <input id="imageWidth" name="imageWidth" type="number" step="0.01" min="0.01" required />
-                <p class="helper-text" data-field="imageWidth"></p>
+                <label for="sheetWidth">Ancho hoja</label>
+                <input id="sheetWidth" name="sheetWidth" type="number" step="0.01" min="1" />
+                <p class="helper-text" data-field="sheetWidth"></p>
               </div>
               <div class="field-group">
-                <label for="imageHeight">Alto imagen</label>
-                <input id="imageHeight" name="imageHeight" type="number" step="0.01" min="0.01" required />
-                <p class="helper-text" data-field="imageHeight"></p>
+                <label for="sheetHeight">Alto hoja</label>
+                <input id="sheetHeight" name="sheetHeight" type="number" step="0.01" min="1" />
+                <p class="helper-text" data-field="sheetHeight"></p>
               </div>
             </div>
-          </div>
 
-          <div class="field-group checkbox-group">
-            <input type="checkbox" id="lockRatio" name="lockRatio" />
-            <label for="lockRatio">Mantener proporción</label>
-          </div>
-
-          <div class="field-group checkbox-group">
-            <input type="checkbox" id="allowRotation" name="allowRotation" checked />
-            <label for="allowRotation">Permitir rotación</label>
-          </div>
-
-          <div class="separator" role="presentation"></div>
-
-          <div class="field-pair">
-            <div class="field-group">
-              <label for="gapX">Espacio horiz (mm)</label>
-              <input id="gapX" name="gapX" type="number" step="0.1" min="0" value="3" />
-            </div>
-            <div class="field-group">
-              <label for="gapY">Espacio vert (mm)</label>
-              <input id="gapY" name="gapY" type="number" step="0.1" min="0" value="3" />
+            <div class="field-pair margin-row">
+              <div class="field-group field-group--compact">
+                <label for="margin">Margen único (mm)</label>
+                <input id="margin" name="margin" type="number" step="1" min="0" value="5" />
+              </div>
+              <div class="field-group field-group--spacer" aria-hidden="true"></div>
             </div>
           </div>
 
-          <div class="field-group checkbox-group">
-            <input type="checkbox" id="linkGaps" name="linkGaps" checked />
-            <label for="linkGaps">Mantener espacios iguales</label>
+          <div class="param-section" aria-labelledby="imageSectionTitle">
+            <div class="param-section__header" aria-hidden="true"></div>
+            <div class="composite-group image-dimensions-group">
+              <div class="field-group__header-row">
+                <span class="field-group__title">Unidad</span>
+                <div class="segmented segmented--mini" id="imageUnitSelector" data-unit-group="image" role="radiogroup" aria-label="Unidad de imagen">
+                  <button type="button" role="radio" data-unit="in" aria-checked="false">in</button>
+                  <button type="button" role="radio" data-unit="cm" aria-checked="false">cm</button>
+                  <button type="button" role="radio" data-unit="mm" aria-checked="true">mm</button>
+                </div>
+              </div>
+              <div class="field-pair image-dimensions">
+                <div class="field-group field-group--compact">
+                  <label for="imageWidth">Ancho imagen</label>
+                  <input id="imageWidth" name="imageWidth" type="number" step="0.01" min="0.01" required />
+                  <p class="helper-text" data-field="imageWidth"></p>
+                </div>
+                <div class="field-group field-group--compact">
+                  <label for="imageHeight">Alto imagen</label>
+                  <input id="imageHeight" name="imageHeight" type="number" step="0.01" min="0.01" required />
+                  <p class="helper-text" data-field="imageHeight"></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field-group checkbox-group">
+              <input type="checkbox" id="lockRatio" name="lockRatio" />
+              <label for="lockRatio">Mantener proporción</label>
+            </div>
+
+            <div class="field-group checkbox-group">
+              <input type="checkbox" id="allowRotation" name="allowRotation" checked />
+              <label for="allowRotation">Permitir rotación</label>
+            </div>
+
+            <div class="field-pair">
+              <div class="field-group field-group--compact">
+                <label for="gapX">Espacio horiz (mm)</label>
+                <input id="gapX" name="gapX" type="number" step="0.1" min="0" value="3" />
+              </div>
+              <div class="field-group field-group--compact">
+                <label for="gapY">Espacio vert (mm)</label>
+                <input id="gapY" name="gapY" type="number" step="0.1" min="0" value="3" />
+              </div>
+            </div>
+
+            <div class="field-group checkbox-group">
+              <input type="checkbox" id="linkGaps" name="linkGaps" checked />
+              <label for="linkGaps">Mantener espacios iguales</label>
+            </div>
           </div>
 
           <div class="form-footer">
@@ -149,20 +151,22 @@
         <div class="panel-header">
           <h2 id="metricsTitle">Métricas</h2>
         </div>
-        <dl class="metrics" id="metricsList">
-          <div>
-            <dt>Copias:</dt>
-            <dd id="metricPieces">--</dd>
-          </div>
-          <div>
-            <dt>Uso área:</dt>
-            <dd id="metricUsage">--</dd>
-          </div>
-          <div>
-            <dt>Desperdicio</dt>
-            <dd id="metricWaste">--</dd>
-          </div>
-        </dl>
+        <div class="param-section metrics-section" aria-label="Resumen de métricas">
+          <dl class="metrics" id="metricsList">
+            <div>
+              <dt>Copias:</dt>
+              <dd id="metricPieces">--</dd>
+            </div>
+            <div>
+              <dt>Uso área:</dt>
+              <dd id="metricUsage">--</dd>
+            </div>
+            <div>
+              <dt>Desperdicio</dt>
+              <dd id="metricWaste">--</dd>
+            </div>
+          </dl>
+        </div>
       </section>
 
       <section class="panel preview-panel" aria-labelledby="previewTitle">
