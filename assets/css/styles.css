@@ -198,6 +198,7 @@ select {
 fieldset legend {
   font-weight: 600;
   margin-bottom: var(--space-1);
+  white-space: nowrap;
 }
 
 .composite-group {
