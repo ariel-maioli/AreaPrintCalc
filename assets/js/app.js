@@ -654,8 +654,8 @@
     rect.setAttribute('height', viewport.height);
     rect.setAttribute('rx', '0');
     rect.setAttribute('fill', 'none');
-    rect.setAttribute('stroke', isStrict ? 'var(--color-strict)' : 'var(--color-optimized)');
-    rect.setAttribute('stroke-width', '1.5');
+    rect.setAttribute('stroke', 'var(--color-border-strong)');
+    rect.setAttribute('stroke-width', '0.8');
     stage.appendChild(rect);
 
     const printableWidth = Math.max(0, (data.sheet.width - 2 * data.sheet.margin) * viewport.scale);
