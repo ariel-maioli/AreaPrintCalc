@@ -1,4 +1,4 @@
-# PeeP Rosario · Calculadora de área imprimible
+# PeeP Rosario · Calculador y optimizador de área imprimible
 
 Aplicación SPA (HTML/CSS/JS) para talleres de sublimación o estampado que desean saber cuántas copias caben en cada hoja sin instalar software. Toda la interfaz está en español, corre offline en el navegador y prioriza accesibilidad, contraste y soporte táctil.
 
