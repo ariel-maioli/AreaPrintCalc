@@ -607,19 +607,31 @@
 
   function renderPreviews(results) {
     previewContainer.innerHTML = '';
-    if (!results.strict.total && !results.optimized.total) {
+    const hasStrict = results.strict.total > 0;
+    const hasOptimized = results.optimized.total > 0;
+
+    if (!hasStrict && !hasOptimized) {
       const empty = document.createElement('p');
       empty.textContent = 'Completa los datos para ver el diseño.';
       previewContainer.appendChild(empty);
       return;
     }
-    const showOptimized = results.optimized.total > results.strict.total;
-    if (showOptimized) {
-      previewContainer.appendChild(
-        createCard('optimized', results.optimized, results.optimized.total - results.strict.total, results)
-      );
+
+    const pair = document.createElement('div');
+    pair.className = 'preview-pair';
+    if (hasStrict && hasOptimized) {
+      pair.classList.add('preview-pair--split');
     }
-    previewContainer.appendChild(createCard('strict', results.strict));
+    previewContainer.appendChild(pair);
+
+    if (hasOptimized) {
+      const gain = Math.max(0, results.optimized.total - (results.strict.total || 0));
+      pair.appendChild(createCard('optimized', results.optimized, gain, results));
+    }
+
+    if (hasStrict) {
+      pair.appendChild(createCard('strict', results.strict));
+    }
   }
 
   function createCard(type, data, gain = 0, allResults) {

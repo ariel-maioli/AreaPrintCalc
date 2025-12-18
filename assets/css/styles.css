@@ -414,8 +414,17 @@ button:focus-visible {
 }
 
 .preview-container {
+  display: block;
+}
+
+.preview-pair {
   display: grid;
   gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+.preview-pair--split {
+  grid-template-columns: 1fr 1fr;
 }
 
 .preview-card {
@@ -533,6 +542,12 @@ button:focus-visible {
   }
   .preview-panel {
     grid-area: preview;
+  }
+}
+
+@media (max-width: 900px) {
+  .preview-pair--split {
+    grid-template-columns: 1fr;
   }
 }
 
