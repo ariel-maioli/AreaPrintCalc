@@ -24,6 +24,7 @@
   --color-surface-muted: #e6ebf0;
   --color-text: #1a1c20;
   --color-text-muted: #4a4f57;
+  --color-text-subtle: #6b7078;
   --color-border: #c5cdd5;
   --color-border-strong: #0e0f12;
   --color-error: #c62828;
@@ -40,6 +41,7 @@
   --color-surface-muted: #111821;
   --color-text: #f4f4f2;
   --color-text-muted: #b9c2cc;
+  --color-text-subtle: #d0d7e0;
   --color-border: #2c3442;
   --color-border-strong: #9ab2c6;
   --color-error: #ff6b6b;
@@ -151,29 +153,29 @@ select {
 
 .form-panel .field-group,
 .form-panel .field-pair {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .form-panel .field-pair {
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .form-panel .composite-group {
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
  .param-section {
   background: var(--color-surface-muted);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
-  margin-bottom: var(--space-3);
+  padding: var(--space-2);
+  margin-bottom: var(--space-2);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .param-section:last-of-type {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .param-section__header {
@@ -207,11 +209,11 @@ select {
 }
 
 .checkbox-group {
-  margin-bottom: var(--space-1);
+  margin: 0;
 }
 
 .checkbox-group + .checkbox-group {
-  margin-top: calc(-1 * var(--space-2));
+  margin-top: var(--space-1);
 }
 
 .form-panel fieldset {
@@ -224,12 +226,12 @@ select {
 }
 
 .form-panel .helper-text {
-  font-size: 0.75rem;
-  min-height: 0.9rem;
+  font-size: 0.7rem;
+  min-height: 0.7rem;
 }
 
 .form-panel .checkbox-group {
-  margin-bottom: var(--space-2);
+  margin-bottom: 0;
 }
 
  .panel-header {
@@ -239,7 +241,7 @@ select {
 .field-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .field-group--spacer {
@@ -256,7 +258,7 @@ fieldset legend {
 .composite-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .field-group__header-row {
@@ -288,9 +290,10 @@ button:focus-visible {
 
 .helper-text {
   margin: 0;
-  min-height: 1.25rem;
-  color: var(--color-text-muted);
-  font-size: 0.85rem;
+  min-height: 0.9rem;
+  color: var(--color-text-subtle);
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 .helper-text:empty {
@@ -300,8 +303,8 @@ button:focus-visible {
 .field-pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
 }
 
 .field-pair .field-group {
@@ -405,8 +408,9 @@ button:focus-visible {
 }
 
 .metric-chip span {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  color: var(--color-text-subtle);
+  letter-spacing: 0.01em;
 }
 
 .preview-container {
@@ -418,14 +422,33 @@ button:focus-visible {
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
   padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .preview-card__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
+  gap: var(--space-2);
 }
+
+.preview-card__header h3 {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  font-weight: 600;
+  margin: 0;
+}
+
+.preview-card--strict .preview-card__header h3 {
+  font-weight: 650;
+  color: var(--color-text);
+}
+
+.preview-card--optimized .preview-card__header h3 {
+  font-weight: 500;
+  color: var(--color-text-muted);
 
 .badge {
   display: inline-flex;
@@ -439,10 +462,14 @@ button:focus-visible {
 
 .preview-stage {
   width: 100%;
+  max-width: 360px;
   aspect-ratio: 3 / 2;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface-muted);
+  display: block;
+  margin: 0 auto;
+  align-self: center;
 }
 
 .preview-card__summary {
