@@ -82,7 +82,13 @@
 
             <div class="field-pair margin-row">
               <div class="field-group field-group--compact">
-                <label for="margin">Margen único (mm)</label>
+                <label for="margin">
+                  Margen único
+                  <span class="info-icon" tabindex="0" aria-describedby="tip-margin" aria-label="Más información sobre el margen único">
+                    ⓘ
+                    <span class="info-tooltip" role="tooltip" id="tip-margin">Se aplica por igual a los cuatro márgenes de la hoja. Valores expresados en milímetros (mm).</span>
+                  </span>
+                </label>
                 <input id="margin" name="margin" type="number" step="1" min="0" value="5" />
               </div>
               <div class="field-group field-group--spacer" aria-hidden="true"></div>
@@ -121,23 +127,47 @@
 
             <div class="field-group checkbox-group">
               <input type="checkbox" id="allowRotation" name="allowRotation" checked />
-              <label for="allowRotation">Permitir rotación</label>
+              <label for="allowRotation">
+                Permitir rotación
+                <span class="info-icon" tabindex="0" aria-describedby="tip-rotation" aria-label="Más información sobre permitir rotación">
+                  ⓘ
+                  <span class="info-tooltip" role="tooltip" id="tip-rotation">Permite girar las imágenes 90° para mejorar el aprovechamiento del área.</span>
+                </span>
+              </label>
             </div>
 
             <div class="field-pair">
               <div class="field-group field-group--compact">
-                <label for="gapX">Espacio horiz (mm)</label>
+                <label for="gapX">
+                  Espacio horiz
+                  <span class="info-icon" tabindex="0" aria-describedby="tip-gapx" aria-label="Más información sobre el espacio horizontal">
+                    ⓘ
+                    <span class="info-tooltip" role="tooltip" id="tip-gapx">Separación mínima entre imágenes. Valores expresados en milímetros (mm).</span>
+                  </span>
+                </label>
                 <input id="gapX" name="gapX" type="number" step="0.1" min="0" value="3" />
               </div>
               <div class="field-group field-group--compact">
-                <label for="gapY">Espacio vert (mm)</label>
+                <label for="gapY">
+                  Espacio vert
+                  <span class="info-icon" tabindex="0" aria-describedby="tip-gapy" aria-label="Más información sobre el espacio vertical">
+                    ⓘ
+                    <span class="info-tooltip" role="tooltip" id="tip-gapy">Separación mínima entre imágenes. Valores expresados en milímetros (mm).</span>
+                  </span>
+                </label>
                 <input id="gapY" name="gapY" type="number" step="0.1" min="0" value="3" />
               </div>
             </div>
 
             <div class="field-group checkbox-group">
               <input type="checkbox" id="linkGaps" name="linkGaps" checked />
-              <label for="linkGaps">Mantener espacios iguales</label>
+              <label for="linkGaps">
+                Mantener espacios iguales
+                <span class="info-icon" tabindex="0" aria-describedby="tip-linkgaps" aria-label="Más información sobre mantener espacios iguales">
+                  ⓘ
+                  <span class="info-tooltip" role="tooltip" id="tip-linkgaps">Usa la misma separación horizontal y vertical.</span>
+                </span>
+              </label>
             </div>
           </div>
 
@@ -158,11 +188,25 @@
               <dd id="metricPieces">--</dd>
             </div>
             <div>
-              <dt>Uso área:</dt>
+              <dt>
+                Uso área
+                <span class="info-icon" tabindex="0" aria-describedby="tip-usage" aria-label="Más información sobre uso de área">
+                  ⓘ
+                  <span class="info-tooltip" role="tooltip" id="tip-usage">Porcentaje de la hoja utilizada para impresión.</span>
+                </span>
+                :
+              </dt>
               <dd id="metricUsage">--</dd>
             </div>
             <div>
-              <dt>Desperdicio:</dt>
+              <dt>
+                Desperdicio
+                <span class="info-icon" tabindex="0" aria-describedby="tip-waste" aria-label="Más información sobre el desperdicio">
+                  ⓘ
+                  <span class="info-tooltip" role="tooltip" id="tip-waste">Área no utilizada dentro de la hoja.</span>
+                </span>
+                :
+              </dt>
               <dd id="metricWaste">--</dd>
             </div>
           </dl>
@@ -171,7 +215,13 @@
 
       <section class="panel preview-panel" aria-labelledby="previewTitle">
         <div class="panel-header">
-          <h2 id="previewTitle">Previsualización</h2>
+          <h2 id="previewTitle">
+            Previsualización
+            <span class="info-icon" tabindex="0" aria-describedby="tip-preview" aria-label="Más información sobre la escala de la previsualización">
+              ⓘ
+              <span class="info-tooltip" role="tooltip" id="tip-preview">Ambos modos usan la misma escala para compararse visualmente.</span>
+            </span>
+          </h2>
           <div class="legend">
             <span class="legend-item legend-strict">Estricto</span>
             <span class="legend-item legend-optimized">Modo optimizado</span>

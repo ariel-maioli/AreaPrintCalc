@@ -770,6 +770,40 @@
     }
   }
 
+  function setupTooltips() {
+    const EDGE_PADDING = 12;
+    const icons = Array.from(document.querySelectorAll('.info-icon'));
+    const alignTooltip = (tooltip) => {
+      tooltip.dataset.align = 'center';
+      tooltip.dataset.position = 'top';
+      const rect = tooltip.getBoundingClientRect();
+      if (rect.left < EDGE_PADDING) {
+        tooltip.dataset.align = 'start';
+      } else if (rect.right > window.innerWidth - EDGE_PADDING) {
+        tooltip.dataset.align = 'end';
+      }
+      if (rect.top < EDGE_PADDING) {
+        tooltip.dataset.position = 'bottom';
+      }
+    };
+
+    icons.forEach((icon) => {
+      const tooltip = icon.querySelector('.info-tooltip');
+      if (!tooltip) return;
+      const show = () => {
+        tooltip.setAttribute('data-visible', 'true');
+        requestAnimationFrame(() => alignTooltip(tooltip));
+      };
+      const hide = () => {
+        tooltip.removeAttribute('data-visible');
+      };
+      icon.addEventListener('mouseenter', show);
+      icon.addEventListener('focus', show);
+      icon.addEventListener('mouseleave', hide);
+      icon.addEventListener('blur', hide);
+    });
+  }
+
   function syncForm() {
     inputs.sheetWidth.value = Number.isFinite(state.sheet.width) ? state.sheet.width : '';
     inputs.sheetHeight.value = Number.isFinite(state.sheet.height) ? state.sheet.height : '';
@@ -806,6 +840,7 @@
   function init() {
     updateSheetInputsLock();
     syncForm();
+    setupTooltips();
     calculateAndRender();
   }
 
