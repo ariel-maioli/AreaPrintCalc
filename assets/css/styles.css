@@ -396,6 +396,10 @@ button:focus-visible {
   color: var(--color-text-muted);
 }
 
+.metrics dt .info-icon {
+  margin-left: 0.15rem;
+}
+
 .metrics dd {
   margin: 0;
 }
@@ -521,6 +525,7 @@ button:focus-visible {
 .preview-card--optimized .preview-card__header h3 {
   font-weight: 500;
   color: var(--color-text-muted);
+}
 
 .badge {
   display: inline-flex;
@@ -534,14 +539,15 @@ button:focus-visible {
 
 .preview-stage {
   width: 100%;
-  max-width: 360px;
   aspect-ratio: 3 / 2;
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border);
   background: var(--color-surface-muted);
   display: block;
-  margin: 0 auto;
-  align-self: center;
+  margin: 0;
+  align-self: stretch;
+  flex: 1 1 auto;
+  min-height: 320px;
 }
 
 .preview-card__summary {

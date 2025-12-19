@@ -196,6 +196,7 @@
     }
     updateSheetInputsLock();
     syncForm();
+    calculateAndRender();
   });
 
   function updateSheetInputsLock() {
