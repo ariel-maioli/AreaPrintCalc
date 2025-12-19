@@ -626,7 +626,8 @@
 
     if (hasOptimized) {
       const gain = Math.max(0, results.optimized.total - (results.strict.total || 0));
-      pair.appendChild(createCard('optimized', results.optimized, gain, results));
+      const percent = Math.max(0, Math.round((results.optimized.total / Math.max(results.strict.total || 1, 1) - 1) * 100));
+      pair.appendChild(createCard('optimized', results.optimized, gain, results, percent));
     }
 
     if (hasStrict) {
@@ -634,7 +635,7 @@
     }
   }
 
-  function createCard(type, data, gain = 0, allResults) {
+  function createCard(type, data, gain = 0, allResults, percentGain = 0) {
     const card = document.createElement('article');
     const isStrict = type === 'strict';
     card.className = `preview-card preview-card--${type}`;
@@ -646,10 +647,9 @@
     header.appendChild(title);
 
     if (!isStrict && gain > 0) {
-      const percentGain = allResults ? Math.round(Math.max(0, allResults.optimized.usage - allResults.strict.usage)) : 0;
       const badge = document.createElement('span');
       badge.className = 'badge';
-      badge.textContent = `+${gain} piezas (+${percentGain}%)`;
+      badge.innerHTML = `<strong>+${gain} piezas</strong><span>+${percentGain}% vs estricto</span>`;
       header.appendChild(badge);
     }
     card.appendChild(header);
